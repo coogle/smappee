@@ -1,0 +1,17 @@
+{
+	"name" : "coogle/smappee",
+	"description" : "A PHP 5.3+ API Library for accessing the Smappee power consumption API",
+	"license" : "MIT",
+	"authors" : [
+		{
+			"name" : "John Coggeshall",
+			"email" : "john@coggeshall.org"
+		}
+	],
+	"autoload" : {
+		"psr-0" : {
+			"Coogle" : "src"
+		}
+	}
+}
+	
