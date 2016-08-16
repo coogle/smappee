@@ -12,6 +12,10 @@
 		"psr-0" : {
 			"Coogle" : "src"
 		}
-	}
+	},
+	"require": {
+        "php": ">=5.4.0",
+        "guzzlehttp/guzzle" : "6.*"
+    }
 }
 	
