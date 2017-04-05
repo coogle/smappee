@@ -34,7 +34,7 @@ class SmappeeLocal
     public function __construct($smappee_ip)
     {
         $this->setHttpClient(new Client())
-             ->setSmappeeHost($ip);
+             ->setSmappeeHost($smappee_ip);
     }
     
     public function getInstantaneous()
@@ -43,13 +43,13 @@ class SmappeeLocal
         
         $endPoint = "http://{$this->getSmappeeHost()}/gateway/apipublic/instantaneous";
         
-        $result = $client->request('POST', $endpoint, [
+        $result = $client->request('POST', $endPoint, [
            'headers' => [
                'Content-Type' => 'application/json'
            ],
            'body' => 'loadInstantaneous'
         ]);
         
-        return $result;
+        return json_decode($result->getBody(), true);
     }
 }
