@@ -50,6 +50,14 @@ class SmappeeLocal
            'body' => 'loadInstantaneous'
         ]);
         
-        return json_decode($result->getBody(), true);
+        $data = json_decode($result->getBody(), true);
+        
+        $retval = [];
+        
+        foreach($data as $item) {
+            $retval[$item['key']] = $item['value'];
+        }
+        
+        return $retval;
     }
 }
