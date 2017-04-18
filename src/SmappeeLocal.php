@@ -49,10 +49,10 @@ class SmappeeLocal
              ->setSmappeeHost($smappee_ip)
              ->setPassword($password);
     }
-
-    public function getInstantaneous()
+    
+    private function _postCall($uri, $body)
     {
-        $client = $this->getHttpClient();
+	    $client = $this->getHttpClient();
         
         $host = $this->getSmappeeHost();
         $password = $this->getPassword();
@@ -61,22 +61,27 @@ class SmappeeLocal
             throw new \Exception("You must set the local Smappee device address and the password to access it.");
         }
         
-        $loginEndpoint = "http://{$host}/gateway/apipublic/logon";
-        $endPoint = "http://{$host}/gateway/apipublic/instantaneous";
-        
-        $result = $client->request('POST', $loginEndpoint, [
+        $url = "http://{$host}".$uri;
+
+		$result = $client->request('POST', $url, [
             'headers' => [
                 'Content-Type' => 'application/json'
             ],
-            'body' => $password
+            'body' => $body
         ]);
         
-        $result = $client->request('POST', $endPoint, [
-           'headers' => [
-               'Content-Type' => 'application/json'
-           ],
-           'body' => 'loadInstantaneous'
-        ]);
+        return $result;
+
+	}
+
+	public function logon() 
+	{
+		$result = $this->_postCall('/gateway/apipublic/logon', $this->_password);
+	}
+    
+    public function getInstantaneous()
+    {            
+        $result = $this->_postCall('/gateway/apipublic/instantaneous', 'loadInstantaneous');
         
         $data = json_decode($result->getBody(), true);
         
@@ -89,6 +94,41 @@ class SmappeeLocal
         }
         
         return $retval;
-    }    
+    }
+    
+    public function listComfortPlugs() 
+    {
+		$result = $this->_postCall('/gateway/apipublic/commandControlPublic', 'load');
+
+        $data = json_decode($result->getBody(), true);
+        
+        $retval = [];
+
+        foreach($data as $item) {
+            if(isset($item['key']) && isset($item['value'])) {
+                $retval[$item['key']] = $item['value'];
+            }
+        }
+        
+        return $retval;
+	}
+	
+	public function setComfortPlug($plug_id=1, $plug_status=1) 
+    {
+		$body = 'control,controlId='.$plug_id.'|'.$plug_status;
+		$result = $this->_postCall('/gateway/apipublic/commandControlPublic', $body);
+
+        $data = json_decode($result->getBody(), true);
+        
+        $retval = [];
+
+        foreach($data as $item) {
+            if(isset($item['key']) && isset($item['value'])) {
+                $retval[$item['key']] = $item['value'];
+            }
+        }
+        
+        return $retval;
+	}
 }
 
