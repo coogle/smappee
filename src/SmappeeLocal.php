@@ -50,9 +50,9 @@ class SmappeeLocal
              ->setPassword($password);
     }
     
-    private function _postCall($uri, $body)
+    protected function _postCall($uri, $body)
     {
-	    $client = $this->getHttpClient();
+	$client = $this->getHttpClient();
         
         $host = $this->getSmappeeHost();
         $password = $this->getPassword();
@@ -63,7 +63,7 @@ class SmappeeLocal
         
         $url = "http://{$host}".$uri;
 
-		$result = $client->request('POST', $url, [
+        $result = $client->request('POST', $url, [
             'headers' => [
                 'Content-Type' => 'application/json'
             ],
@@ -72,12 +72,12 @@ class SmappeeLocal
         
         return $result;
 
-	}
+    }
 
-	public function logon() 
-	{
+    public function logon() 
+    {
 		$result = $this->_postCall('/gateway/apipublic/logon', $this->_password);
-	}
+    }
     
     public function getInstantaneous()
     {            
@@ -98,7 +98,7 @@ class SmappeeLocal
     
     public function listComfortPlugs() 
     {
-		$result = $this->_postCall('/gateway/apipublic/commandControlPublic', 'load');
+        $result = $this->_postCall('/gateway/apipublic/commandControlPublic', 'load');
 
         $data = json_decode($result->getBody(), true);
         
@@ -111,12 +111,13 @@ class SmappeeLocal
         }
         
         return $retval;
-	}
+    }
 	
-	public function setComfortPlug($plug_id=1, $plug_status=1) 
+    public function setComfortPlug($plug_id=1, $plug_status=1) 
     {
-		$body = 'control,controlId='.$plug_id.'|'.$plug_status;
-		$result = $this->_postCall('/gateway/apipublic/commandControlPublic', $body);
+	$body = 'control,controlId='.$plug_id.'|'.$plug_status;
+	
+	$result = $this->_postCall('/gateway/apipublic/commandControlPublic', $body);
 
         $data = json_decode($result->getBody(), true);
         
@@ -129,6 +130,6 @@ class SmappeeLocal
         }
         
         return $retval;
-	}
+    }
 }
 
