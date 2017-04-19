@@ -53,12 +53,10 @@ class SmappeeLocal
     protected function _postCall($uri, $body)
     {
 	$client = $this->getHttpClient();
-        
         $host = $this->getSmappeeHost();
-        $password = $this->getPassword();
         
-        if(empty($host) || empty($password)) {
-            throw new \Exception("You must set the local Smappee device address and the password to access it.");
+        if(empty($host)) {
+            throw new \Exception("You must set the local Smappee device address to access it.");
         }
         
         $url = "http://{$host}".$uri;
@@ -74,9 +72,15 @@ class SmappeeLocal
 
     }
 
-    public function logon() 
+    public function login() 
     {
-	$result = $this->_postCall('/gateway/apipublic/logon', $this->_password);
+	$password = $this->getPassword();
+	    
+	if(empty($password)) {
+            throw new \Exception("You must set the Smappee password to login");
+	}
+	    
+	$result = $this->_postCall('/gateway/apipublic/logon', $password);
     }
     
     public function getInstantaneous()
@@ -113,9 +117,9 @@ class SmappeeLocal
         return $retval;
     }
 	
-    public function setComfortPlug($plug_id=1, $plug_status=1) 
+    public function setComfortPlug($plug_id, $plug_status) 
     {
-	$body = 'control,controlId='.$plug_id.'|'.$plug_status;
+	$body = 'control,controlId=' . urlencode($plug_id) . '|' . (int)(bool)$plug_status;
 	
 	$result = $this->_postCall('/gateway/apipublic/commandControlPublic', $body);
 
