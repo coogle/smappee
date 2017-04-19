@@ -76,7 +76,7 @@ class SmappeeLocal
 
     public function logon() 
     {
-		$result = $this->_postCall('/gateway/apipublic/logon', $this->_password);
+	$result = $this->_postCall('/gateway/apipublic/logon', $this->_password);
     }
     
     public function getInstantaneous()
